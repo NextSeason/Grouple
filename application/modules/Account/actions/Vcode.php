@@ -17,7 +17,9 @@ Class VcodeAction extends \Yaf\Action_Abstract {
 
         $this->controller = $this->getController();
 
-        !$this->paramsProcessing()->saveCode()->sendCode()->success();
+        !$this->paramsProcessing()->saveCode()->sendCode();
+        
+        $this->controller->success();
     }
 
     private function saveCode() {
@@ -63,10 +65,10 @@ Class VcodeAction extends \Yaf\Action_Abstract {
     }
 
     private function sendEmail() {
-        $emailConf = \Local\Utils::loadConf();
+        $emailConf = \Local\Utils::loadConf( 'email', 'grouple' );
 
         $params = array(
-            'From' => '',
+            'From' => $emailConf->addresses->system,
             'Subject' => 'Grouple验证码',
             'Body' => $this->code
         );
@@ -94,7 +96,7 @@ Class VcodeAction extends \Yaf\Action_Abstract {
 
         if( filter_var( $to, FILTER_VALIDATE_EMAIL ) ) {
             $type = 'email';
-        } else if( preg_match( '^\d{11}$', $to ) ) {
+        } else if( preg_match( '#^\d{11}$#', $to ) ) {
             $type = 'phone';
         } else {
             $this->controller->error( 'PARAMS_ERR' );

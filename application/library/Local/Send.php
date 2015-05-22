@@ -6,7 +6,7 @@ Class Send {
     static public function shortMessage() {
     }
 
-    static public function email( $addresses, $params  ) {
+    static public function email( $params, $addresses ) {
         $mail = new PHPMailer();
 
         $mail->isSMTP();
@@ -17,7 +17,7 @@ Class Send {
         $mail->SMTPSecure = 'tls';
 
         $mail->From = 'kelcb@163.com';
-        $mail->FromName = 'LvChengbin';
+        $mail->FromName = 'GROUPLE.COM';
 
 
         foreach( $addresses as $address ) {
@@ -28,10 +28,10 @@ Class Send {
             $mail->$key = $value;
         }
 
-        $mail->Subject = $subject;
-        $mail->Body = $body;
-
-        if( !$mail->send() ) return false;
+        if( !$mail->send() ) {
+            echo $mail->ErrorInfo;
+            return false;
+        }
 
         return true;
     }

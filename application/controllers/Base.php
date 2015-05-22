@@ -22,10 +22,15 @@ Class BaseController extends \Yaf\Controller_Abstract {
         $this->setToken();
 
         if( $this->request->isPost() && $this->conf->csrf_token ) {
-            $this->checkToken();
+            if( !$this->checkToken() ) {
+                $this->error( 'PARAMS_ERR' );
+            }
         }
     }
 
+    /**
+     * set default header for whole site
+     */
     protected function setHeader() {
         $response = $this->getResponse();
         $response->setHeader( 'Content-Type', 'application/json; charset=utf-8' );
@@ -71,7 +76,8 @@ Class BaseController extends \Yaf\Controller_Abstract {
         /**
          * set new cookie
          */
-        setcookie( self::TOKEN_COOKIE_NAME, $newToken, 0, '/', $this->conf->root_domain, false, true );
+        echo '..setcookie';
+        setcookie( self::TOKEN_COOKIE_NAME, $newToken, 0, '/' );//, $this->conf->root_domain, false, false );
     }
 
     /**
@@ -98,8 +104,6 @@ Class BaseController extends \Yaf\Controller_Abstract {
      */
     protected function loginStatus() {
         $session = $this->session;
-
-
     }
 
     protected function response( $data ) {
